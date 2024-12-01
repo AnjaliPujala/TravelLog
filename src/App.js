@@ -5,6 +5,7 @@ import SignUp from './auth/SignUp';
 import HomePage from './components/HomePage';
 import Login from './auth/Login';
 import WelcomePage from './components/WelcomePage';
+import ProfilePage from './components/home-page-components/ProfilePage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path='/login-page' element={<Login/>}/>
         <Route path='/signup-page' element={<SignUp/>}/>
         <Route path='/home-page' element={<HomePage/>}/>
+        <Route path='/profile' element={<ProfilePage/>}/>
       </Routes>
       </div>
     </BrowserRouter>

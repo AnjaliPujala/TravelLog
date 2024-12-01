@@ -42,7 +42,7 @@ export default function HomePage() {
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item bg-primary mx-2">
-                <Link className="nav-link" to="/posts">Profile</Link>
+                <Link className="nav-link" to="/profile">Profile</Link>
               </li>
               <li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/posts">Your Posts</Link>
@@ -72,7 +72,7 @@ export default function HomePage() {
           <span className="line"></span>
         </div>
         <ul className="sidebar-links">
-          <li><Link to="/profile-page">Profile</Link></li>
+          <li><Link to="/profile">Profile</Link></li>
           <li><Link to="/your-posts">Your Posts</Link></li>
           <li><Link to="/saved">Saved</Link></li>
           <li><Link to="/notifications">Notifications</Link></li>
@@ -81,7 +81,7 @@ export default function HomePage() {
         </ul>
       </div>
 
-      {/* Main Content */}
+
       <div className="container main-content">
         <h2>Recent Posts</h2>
         {posts.length === 0 ? (
