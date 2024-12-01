@@ -41,11 +41,9 @@ export default function HomePage() {
         </span>
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav ms-auto">
+              
               <li className="nav-item bg-primary mx-2">
-                <Link className="nav-link" to="/profile">Profile</Link>
-              </li>
-              <li className="nav-item bg-primary mx-2">
-                <Link className="nav-link" to="/posts">Your Posts</Link>
+                <Link className="nav-link" to="/your-posts">Your Posts</Link>
               </li>
               <li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/saved">Saved</Link>
@@ -57,7 +55,7 @@ export default function HomePage() {
                 <Link className="nav-link" to="/settings">Settings</Link>
               </li>
               <li className="nav-item bg-primary mx-2">
-                <Link className="nav-link" to="/login-page" onClick={() => localStorage.removeItem('isLoggedIn')}>Logout</Link>
+                <Link className="nav-link" to="/profile">Profile</Link>
               </li>
             </ul>
           </div>
