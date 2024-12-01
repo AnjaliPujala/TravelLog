@@ -1,0 +1,57 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://th.bing.com/th/id/R.c2420fad16d678111c4065445a1f4cea?rik=UgQsWbwXoh4KEg&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f3%2f5%2fe%2f354836.jpg&ehk=ir%2fehvQNvO5M9E9sHWCP48DsPfl4048YDUj%2b%2bWZKodo%3d&risl=&pid=ImgRaw&r=0');
+  background-size: cover;
+  flex-direction: column;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+  }
+  
+  .card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .card input {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .card input:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 4px rgba(0, 123, 255, 0.4);
+  }
+  
+  .card button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card button:hover {
+    background-color: #0056b3;
+  }
+  

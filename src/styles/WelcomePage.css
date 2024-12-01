@@ -1,0 +1,222 @@
+/* Container to center everything and create a background */
+/* Basic Container Styling */
+.welcome-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('https://th.bing.com/th/id/R.c2420fad16d678111c4065445a1f4cea?rik=UgQsWbwXoh4KEg&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f3%2f5%2fe%2f354836.jpg&ehk=ir%2fehvQNvO5M9E9sHWCP48DsPfl4048YDUj%2b%2bWZKodo%3d&risl=&pid=ImgRaw&r=0');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: relative;
+
+}
+
+
+/* Welcome Content Box Styling */
+.welcome-content {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 2s ease-out;
+    transition: all 0.3s ease;
+}
+
+/* Welcome Title Styling */
+.welcome-title {
+    font-size: 3rem;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    margin-bottom: 20px;
+    animation: bounceIn 1s ease, glowing 2s infinite alternate;
+}
+
+/* Glow animation for title */
+@keyframes glowing {
+    0% {
+        text-shadow: 0 0 5px #00b5e2, 0 0 10px #00b5e2, 0 0 15px #00b5e2;
+    }
+    50% {
+        text-shadow: 0 0 10px #00b5e2, 0 0 20px #00b5e2, 0 0 30px #00b5e2;
+    }
+    100% {
+        text-shadow: 0 0 5px #00b5e2, 0 0 10px #00b5e2, 0 0 15px #00b5e2;
+    }
+}
+/* Welcome Description Styling */
+.welcome-description {
+    font-size: 1.2rem;
+    color: #555;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 40px;
+    opacity: 0.8;
+    animation: fadeInUp 1.5s ease-in-out;
+}
+
+/* Button Styling */
+.welcome-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Button Hover Effect */
+.welcome-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 5px 25px rgba(0, 123, 255, 0.4);
+}
+
+
+
+.bubble {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: rgba(11, 164, 206, 0.7);
+    position: absolute;
+    animation: bubbleAnimation 10s ease-in-out infinite;
+    opacity: 0.5;
+}
+
+.bubble-1 {
+    animation-duration: 12s;
+    left: 0%;
+    animation-delay: 0s;
+}
+
+.bubble-2 {
+    animation-duration: 9s;
+    left: 10%;
+    animation-delay: 2s;
+}
+
+.bubble-3 {
+    animation-duration: 11s;
+    left: 15%;
+    animation-delay: 1s;
+}
+
+.bubble-4 {
+    animation-duration: 15s;
+    left: 80%;
+    animation-delay: 3s;
+}
+
+.bubble-5 {
+    animation-duration: 18s;
+    left: 90%;
+    animation-delay: 4s;
+}
+
+.bubble-6 {
+    animation-duration: 14s;
+    left: 95%;
+    animation-delay: 6s;
+}
+
+
+
+/* Bubbles Moving Effect */
+@keyframes bubbleAnimation {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+    }
+    50% {
+        transform: translateY(-300px) scale(1.5);
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.6;
+    }
+}
+
+/* Travel-related Images */
+.travel-images {
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+    right: 10%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    pointer-events: none;
+}
+
+.travel-images img {
+    width: 200px;
+    height: 150px;
+    margin-right: 50%;
+    animation: floatUp 8s ease-in-out infinite;
+}
+
+.image-airplane {
+    animation-delay: 0s;
+}
+
+.image-mountains {
+    animation-delay: 4s;
+}
+
+/* Travel Image Floating Effect */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Animations for different elements */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    60% {
+        transform: translateY(15px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+.home-container {
+    font-family: 'Arial', sans-serif;
+    background-color: white;
+    min-height: 100vh;
+    color: black;
+    padding-bottom: 50px;
+}
+
+.navbar {
+    background-color: #1e2a47;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item {
+    border-radius: 5px;
+}
+
+.navbar-nav .nav-item .nav-link {
+    color: rgb(255, 255, 255);
+    font-weight: 500;
+    padding: 12px 20px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ff6347;
+    transform: scale(1.1);
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    padding-top: 60px;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar.open {
+    right: 0;
+}
+
+.sidebar .close-btn {
+    font-size: 30px;
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+.sidebar-links {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar-links li {
+    padding: 15px;
+}
+
+.sidebar-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.sidebar-links li a:hover {
+    background-color: #575757;
+}
+
+.hamburger {
+    display: none;
+    cursor: pointer;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.hamburger span {
+    display: block;
+    width: 30px;
+    height: 4px;
+    margin: 6px 0;
+    background-color: #333;
+}
+
+/* Title Styling */
+.navbar-brand.middle-title {
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 36px;
+    color: #10bcda;
+    text-align: center;
+    position: relative;
+    font-weight: bold;
+    margin: 0 auto; /* Ensures the title is centered */
+}
+
+/* Coconut icon styling */
+.coconut-icon {
+    width: 50px;
+    height: 50px;      
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.post-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    color: #333;
+}
+
+.post-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.post-card p {
+    font-size: 16px;
+}
+@media (min-width:769px){
+    .middle-title-small{
+        display: none;
+    }
+}
+@media (max-width: 768px) {
+    
+    .navbar {
+        display: none;
+    }
+    .middle-title-small{
+        display: relative;
+        font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        
+        color: #10bcda;
+       
+        position: relative;
+        font-weight: bold;
+        
+        font-size: 28px; 
+        text-align: center;
+        margin-left: 0; 
+    }
+    .hamburger {
+        display: block;
+    }
+
+    .sidebar.open {
+        right: 0;
+    }
+
+    .main-content .header {
+        padding: 30px 20px;
+    }
+
+
+   
+
+    .coconut-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sidebar-links li {
+        padding: 12px;
+    }
+
+    .sidebar-links li a {
+        font-size: 16px;
+    }
+}
