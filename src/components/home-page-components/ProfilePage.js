@@ -29,11 +29,11 @@ export default function ProfilePage() {
   };
 
   const handleBack = () => {
-    navigate(-1);  // Navigates to the previous page
+    navigate(-1); 
   };
 
   const handleEditProfile = () => {
-    setIsEditing(true);  // Enable editing mode
+    setIsEditing(true);  
   };
 
   const handleSaveProfile = async() => {
@@ -68,14 +68,14 @@ export default function ProfilePage() {
   };
 
   console.log("user photo", user);
-
+  
   return (
     <div className="profile-container">
       <div className="profile-card">
         {user ? (
           <>
             <img
-              src={user.photoURL!==null ? user.photoURL : 'https://via.placeholder.com/150'}
+              src={user.photoURL!=="" ?user.photoURL:'https://via.placeholder.com/150'}
               alt="Profile"
               className="profile-dp"
             />

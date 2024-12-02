@@ -7,6 +7,7 @@ import Login from './auth/Login';
 import WelcomePage from './components/WelcomePage';
 import ProfilePage from './components/home-page-components/ProfilePage';
 import YourPostsPage from './components/home-page-components/YourPostsPage';
+import Notifications from './components/home-page-components/Notifications';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path='/home-page' element={<HomePage/>}/>
         <Route path='/profile' element={<ProfilePage/>}/>
         <Route path='/your-posts' element={<YourPostsPage/>}/>
+        <Route path='/notifications' element={<Notifications/>}/>
       </Routes>
       </div>
     </BrowserRouter>

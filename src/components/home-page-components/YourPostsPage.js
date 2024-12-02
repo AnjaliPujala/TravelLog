@@ -150,11 +150,12 @@ export default function YourPostsPage() {
         </button>
         <button className='back-to-home' onClick={(e)=>navigate(-1)}>Back</button>
       </div>
-      <div className="posts-list">
+
+      {posts.length === 0 ? <div><h3>No posts yet</h3></div>:<div className="posts-list">
         {posts.map((post) => (
           <div key={post.id} className="post-card">
             <div className="post-header">
-              <img src={post.profilePic} alt="Profile" className="profile-pic" />
+              <img src={post.profilePic!==""? post.profilePic : 'https://via.placeholder.com/150'} alt="Profile" className="profile-pic" />
               <h3 className="post-title">{post.title}</h3>
             </div>
             <p className="post-description">{post.description}</p>
@@ -194,6 +195,7 @@ export default function YourPostsPage() {
           </div>
         ))}
       </div>
+      };
 
       {/* Modal for adding a post */}
       {isModalOpen && (

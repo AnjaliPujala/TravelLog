@@ -10,6 +10,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [loading,setLoading]=useState(false);
   const navigate = useNavigate();
 
   const handleManualSignUp = async (e) => {
@@ -23,8 +24,9 @@ export default function SignUp() {
       alert('Password mismatch');
       return;
     }
-
+    
     try {
+      setLoading(true);
       const userRef = collection(db, 'users');
       const q = query(userRef, where('email', '==', email));
       const querySnapshot = await getDocs(q);
@@ -39,14 +41,17 @@ export default function SignUp() {
         name,
         email,
         password,
-        photoURL: '', 
+        photoURL: '',
+        sentConnections:[],
+        requests:[],
+        connections:[], 
         createdAt: new Date(),
       });
 
-      const newUser = { id: docRef.id, name, email, photoURL: '' };
+      const newUser = { id: docRef.id, name, email, photoURL: '',sentConnections:[],requests:[],connections:[] };
       sessionStorage.setItem('user', JSON.stringify(newUser));
 
-      alert('Signup successful!');
+      setLoading(false);
       localStorage.setItem('isLoggedIn', 'true');
       setName('');
       setPassword('');
@@ -60,7 +65,9 @@ export default function SignUp() {
   };
 
   const handleGoogleSignUp = async () => {
+    
     try {
+      setLoading(true);
       const auth = getAuth();
       const provider = new GoogleAuthProvider();
 
@@ -84,13 +91,17 @@ export default function SignUp() {
         email: googleEmail,
         password: '', 
         photoURL,
+        sentConnections:[],
+        requests:[], 
+        connections:[],
         createdAt: new Date(),
       });
     
-      const newUser = { id: docRef.id, name: displayName || 'User', email: googleEmail, photoURL };
+      const newUser = { id: docRef.id, name: displayName || 'User', email: googleEmail, photoURL,sentConnections:[],
+        requests:[],connections:[] };
       sessionStorage.setItem('user', JSON.stringify(newUser));
 
-      alert('Signup successful!');
+      setLoading(false);
       localStorage.setItem('isLoggedIn', 'true');
       navigate('/home-page');
     } catch (error) {
@@ -98,7 +109,9 @@ export default function SignUp() {
       alert('Error signing up with Google. Please try again.');
     }
   };
-
+  if(loading){
+    return <div>Loading...</div>
+  }
   return (
     <div className="signup-container">
       <h2>Sign Up</h2>

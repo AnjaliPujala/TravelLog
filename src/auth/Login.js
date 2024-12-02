@@ -30,7 +30,7 @@ export default function Login() {
         const userDoc = docs.docs[0];  
         const user = {
           id: userDoc.id, 
-          photoURL: null,             
+          photoURL: null, 
           ...userDoc.data(),
         };
         sessionStorage.setItem('user', JSON.stringify(user));
