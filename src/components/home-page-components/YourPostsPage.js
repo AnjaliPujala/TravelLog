@@ -20,7 +20,7 @@ export default function YourPostsPage() {
 
   useEffect(() => {
     const userData = JSON.parse(sessionStorage.getItem('user'));
-    console.log(userData);
+    
     if (userData) {
       setUser(userData);
     }
@@ -79,9 +79,14 @@ export default function YourPostsPage() {
   };
 
   const handleAddPost = async () => {
+    if(newPost.description==='' || newPost.description.length>1000){
+      alert("Description length should be within 10 to 1000 characters");
+      return;
+    }
     if (newPost.locationLink) {
       const postData = {
         email: user.email,
+        name:user.name,
         profilePic: user.photoURL,
         title: newPost.title,
         description: newPost.description,
@@ -90,7 +95,7 @@ export default function YourPostsPage() {
         comments: [],
         shares: 0,
       };
-
+      
       try {
         const docRef = await addDoc(collection(db, 'user-posts'), postData);
         setPosts([{ id: docRef.id, ...postData }, ...posts]);
@@ -155,8 +160,9 @@ export default function YourPostsPage() {
         {posts.map((post) => (
           <div key={post.id} className="post-card">
             <div className="post-header">
-              <img src={post.profilePic!==""? post.profilePic : 'https://via.placeholder.com/150'} alt="Profile" className="profile-pic" />
+              <img src={'https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/zekn8v1idkfqfrlttdpx'} alt="Profile" className="profile-pic" />
               <h3 className="post-title">{post.title}</h3>
+              
             </div>
             <p className="post-description">{post.description}</p>
             {post.locationLink && (
@@ -216,10 +222,12 @@ export default function YourPostsPage() {
             </div>
             <div>
               <textarea
-                name="description"
+                name="description" 
+                width="70%"
+                className="textarea-wide"
                 value={newPost.description}
                 onChange={handleInputChange}
-                placeholder="Description"
+                placeholder="Share your experience"
               ></textarea>
             </div>
             <div>

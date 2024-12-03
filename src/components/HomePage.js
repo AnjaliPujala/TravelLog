@@ -100,10 +100,13 @@ export default function HomePage() {
     }
   }, []);
 
-  const handleConnectionRequest = async (receiverEmail) => {
+  const handleConnectionRequest = async (receiverName, receiverEmail) => {
     if (sentRequests.includes(receiverEmail)) return;
   
-    const updatedUser = { ...user, sentConnections: [...user.sentConnections, receiverEmail] };
+    const updatedUser = { 
+      ...user, 
+      sentConnections: [...user.sentConnections, { email: receiverEmail, name: receiverName }] 
+    };
     setUser(updatedUser);
   
     setSentRequests((prevRequests) => [...prevRequests, receiverEmail]);
@@ -121,14 +124,13 @@ export default function HomePage() {
       const userDoc = userDocs.docs[0];
       const userDocRef = doc(db, 'users', userDoc.id);
   
-      
       const userDocData = userDoc.data();
       const newSentConnections = userDocData.sentConnections || [];
       await updateDoc(userDocRef, {
-        sentConnections: [...newSentConnections, receiverEmail],
+        sentConnections: [...newSentConnections, { email: receiverEmail, name: receiverName }],
       });
   
-      sessionStorage.setItem('user', JSON.stringify(updatedUser));  
+      sessionStorage.setItem('user', JSON.stringify(updatedUser));
   
       const recipientRef = collection(db, 'users');
       q = query(recipientRef, where('email', '==', receiverEmail));
@@ -146,15 +148,14 @@ export default function HomePage() {
       const newRequests = recipientData.requests || [];
   
       await updateDoc(recipientDocRef, {
-        requests: [...newRequests, user.email],
+        requests: [...newRequests, { senderEmail: user.email, senderName: user.name }],
       });
   
-      alert('Connection request sent');
     } catch (error) {
       alert('Error sending connection request: ', error);
     }
-};
-
+  };
+  
   return (
     <div className="home-container">
       <span className="navbar-brand middle-title-small">
@@ -165,17 +166,28 @@ export default function HomePage() {
         />
         TravelLog
       </span>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light d-none d-lg-block">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div className="container-fluid">
           <span className="navbar-brand middle-title">
             <img
               src="https://static.vecteezy.com/system/resources/previews/025/165/901/original/coconut-tree-transparent-background-free-png.png"
-              alt="Coconuttree"
+              alt="Coconut tree"
               className="coconut-icon"
             />
             TravelLog
           </span>
-          <div className="collapse navbar-collapse">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/your-posts">
@@ -183,13 +195,13 @@ export default function HomePage() {
                 </Link>
               </li>
               <li className="nav-item bg-primary mx-2">
-                <Link className="nav-link" to="/saved">
-                  Saved
+                <Link className="nav-link" to="/connections">
+                  Connections
                 </Link>
               </li>
               <li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/notifications">
-                Connection Requests
+                  Connection Requests
                 </Link>
               </li>
               <li className="nav-item bg-primary mx-2">
@@ -221,7 +233,7 @@ export default function HomePage() {
             <Link to="/your-posts">Your Posts</Link>
           </li>
           <li>
-            <Link to="/saved">Saved</Link>
+            <Link to="/connections">Connections</Link>
           </li>
           <li>
             <Link to="/notifications">Connection Requests</Link>
@@ -244,12 +256,17 @@ export default function HomePage() {
         ) : (
           posts.map((post) => (
             <div key={post.id} className="post-card">
+              
               <div className="post-header">
+              <div>
+                {post.name && <p className="username">{post.name}</p>}
                 <img
-                  src={post.profilePic !== '' ? post.profilePic : 'https://via.placeholder.com/150'}
+                  src={'https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/626fd8140423801.6241b91e24d9c.png'}
                   alt="Profile"
                   className="profile-pic"
                 />
+              </div>
+                
                 <h3 className="post-title">{post.title}</h3>
               </div>
               <p className="post-description">{post.description}</p>
@@ -258,13 +275,17 @@ export default function HomePage() {
                 <button onClick={() => handleLike(post.id)}>👍 ({post.likes})</button>
                 <button onClick={() => handleShowComments(post.id)}>💬 ({post.comments.length})</button>
                 <button
-                      onClick={() => handleConnectionRequest(post.email)} 
+                      onClick={() => handleConnectionRequest(post.name,post.email)} 
                       disabled={sentRequests.includes(post.email) || post.email === user.email ||user.connections.includes(post.email)  }>
                       {user.email === post.email 
                       ? "Your post" 
-                      : (user.connections.includes(post.email) 
-                      ? 'Chat' 
-                      : (user.sentConnections.includes(post.email) ? 'Request Sent' : '🤝'))}
+                      : (user.connections.some(connection => 
+                        connection.email === post.email && connection.name === post.name
+                      )
+                      ? 'Connection🤗' 
+                      : (user.sentConnections.some(connection => 
+                        connection.email === post.email && connection.name === post.name
+                      ) ? 'Request Sent' : '🤝'))}
                 </button>
 
 

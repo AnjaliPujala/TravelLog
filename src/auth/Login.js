@@ -11,7 +11,7 @@ export default function Login() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const [loading,setLoading]=useState(false);
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email === '' || password === '') {
@@ -20,13 +20,14 @@ export default function Login() {
     }
 
     try {
+      
       const userRef = collection(db, 'users');
       const q = query(userRef, where('email', '==', email), where('password', '==', password));
       const docs = await getDocs(q);
       if (docs.empty) {
         alert("Invalid email or password");
       } else {
-        alert("Login successful");
+        setLoading(true);
         const userDoc = docs.docs[0];  
         const user = {
           id: userDoc.id, 
@@ -35,6 +36,7 @@ export default function Login() {
         };
         sessionStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('isLoggedIn', 'true');
+        setLoading(false);
         navigate('/home-page');
       }
     } catch (error) {
@@ -75,7 +77,9 @@ export default function Login() {
       alert("Error updating password: ", error);
     }
   };
-
+if(loading){
+  return <div>Loading...</div>
+}
   return (
     <div className='login-container'>
       <div className='card'>

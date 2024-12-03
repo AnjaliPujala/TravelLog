@@ -1,0 +1,84 @@
+/* Basic styles for the chat container */
+.chat-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  
+  /* Style for messages section */
+  .messages {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  
+  .message {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #e1f5fe;
+    max-width: 80%;
+  }
+  
+  .sender {
+    align-self: flex-start;
+    background-color: #e1f5fe;
+  }
+  
+  .receiver {
+    align-self: flex-end;
+    background-color: #c8e6c9;
+  }
+  
+  .message p {
+    margin: 0;
+    font-size: 14px;
+    align-content: end;
+  }
+  
+  .message small {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  /* Styling for input and send button */
+  .send-message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .send-message input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .send-message button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .send-message button:hover {
+    background-color: #0056b3;
+  }
+.messages .footer{
+    display: flex;
+    justify-content: space-around;
+}  

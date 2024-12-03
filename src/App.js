@@ -8,6 +8,8 @@ import WelcomePage from './components/WelcomePage';
 import ProfilePage from './components/home-page-components/ProfilePage';
 import YourPostsPage from './components/home-page-components/YourPostsPage';
 import Notifications from './components/home-page-components/Notifications';
+import Connections from './components/home-page-components/Connections';
+import ChatHere from './components/home-page-components/ChatHere';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path='/profile' element={<ProfilePage/>}/>
         <Route path='/your-posts' element={<YourPostsPage/>}/>
         <Route path='/notifications' element={<Notifications/>}/>
+        <Route path='/connections' element={<Connections/>}/>
+        <Route path="/chat/:email1/:email2" element={<ChatHere/>}/>
       </Routes>
       </div>
     </BrowserRouter>

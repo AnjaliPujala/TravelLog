@@ -127,4 +127,8 @@
     font-size: 30px;
     cursor: pointer;
   }
+  .textarea-wide {
+    width: 100%;
+    height: 100px;
+  }
   
