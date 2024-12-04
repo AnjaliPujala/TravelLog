@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/TraveLog/static/css/main.ceb5f02a.css",
-    "main.js": "/TraveLog/static/js/main.d7dc090f.js",
-    "index.html": "/TraveLog/index.html",
-    "main.ceb5f02a.css.map": "/TraveLog/static/css/main.ceb5f02a.css.map",
-    "main.d7dc090f.js.map": "/TraveLog/static/js/main.d7dc090f.js.map"
+    "main.css": "/TravelLog/static/css/main.ceb5f02a.css",
+    "main.js": "/TravelLog/static/js/main.23eb2a9d.js",
+    "index.html": "/TravelLog/index.html",
+    "main.ceb5f02a.css.map": "/TravelLog/static/css/main.ceb5f02a.css.map",
+    "main.23eb2a9d.js.map": "/TravelLog/static/js/main.23eb2a9d.js.map"
   },
   "entrypoints": [
     "static/css/main.ceb5f02a.css",
-    "static/js/main.d7dc090f.js"
+    "static/js/main.23eb2a9d.js"
   ]
 }
