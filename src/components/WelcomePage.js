@@ -15,7 +15,7 @@ const WelcomePage = () => {
                 <h1 className="welcome-title">Welcome to TravelLog</h1>
                 <div className="bubble bubble-4"></div>
                 <p className="welcome-description">
-                    Your journey starts here. Explore, plan, and track your travels with ease.
+                    Your journey starts here. Explore, Share, and Connect with Travellors.
                 </p>
                 <button className="welcome-button" onClick={handleClick}>
                     Start Your Adventure
