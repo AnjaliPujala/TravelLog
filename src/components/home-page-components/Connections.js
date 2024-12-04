@@ -1,46 +1,71 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../../styles/Connections.css';
+import ChatHere from './ChatHere';
+import { useNavigate } from 'react-router-dom';
 
 export default function Connections() {
-  const [connections, setConnection] = useState([]);
-  const navigate = useNavigate(); // Use the navigate function for routing
-    const [user,setUser]=useState('');
+  const [connections, setConnections] = useState([]);
+  const [chatData, setChatData] = useState(null); 
+  const [user, setUser] = useState('');
+  const navigate = useNavigate();
+
   useEffect(() => {
     const userData = JSON.parse(sessionStorage.getItem('user'));
-
-    if (!userData) {
-      return;
-    } else {
-      setConnection(userData.connections);
+    if (userData) {
+      setConnections(userData.connections);
       setUser(userData);
     }
   }, []);
 
-  const handleChatClick = (email1, email2) => {
-    navigate(`/chat/${email1}/${email2}`); 
+  const openChat = (email1, email2, sender, receiver) => {
+    setChatData({ email1, email2, sender, receiver }); 
+  };
+
+  const closeChat = () => {
+    setChatData(null); 
   };
 
   return (
-    <div className='connections-container'>
-      <div className='title'>
-        <h2>Your connections 🫂</h2>
-        <button className='connections-back-btn' onClick={() => navigate(-1)}>
+    <div className={`connections-container ${chatData ? 'hide-sidebar' : ''}`}>
+      <div className="title">
+        <h2>Your Connections 🫂</h2>
+        <button className="connections-back-btn" onClick={() => navigate(-1)}>
           Back
         </button>
       </div>
 
-      {connections.length === 0 ? (
+      {!connections.length ? (
         <h4>You don't have any connections</h4>
       ) : (
         connections.map((connection) => (
-          <div key={connection.email} className='connection'>
+          <div key={connection.email} className="connection">
             <p>{connection.name}</p>
-            <button onClick={() => handleChatClick(user.email,connection.email)}>
+            <button
+              className="chat-btn"
+              onClick={() =>
+                openChat(user.email, connection.email, user.name, connection.name)
+              }
+            >
               Chat
             </button>
           </div>
         ))
+      )}
+
+      {/* Chat Modal */}
+      {chatData && (
+        <div className="modal">
+          <div className="modal-content">
+            <ChatHere
+              email1={chatData.email1}
+              email2={chatData.email2}
+              receiver={chatData.receiver}
+            />
+            <button className="close-button" onClick={closeChat}>
+              &times;
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

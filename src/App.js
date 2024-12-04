@@ -24,7 +24,7 @@ function App() {
         <Route path='/your-posts' element={<YourPostsPage/>}/>
         <Route path='/notifications' element={<Notifications/>}/>
         <Route path='/connections' element={<Connections/>}/>
-        <Route path="/chat/:email1/:email2" element={<ChatHere/>}/>
+        <Route path="/chat" element={<ChatHere/>}/>
       </Routes>
       </div>
     </BrowserRouter>

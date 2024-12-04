@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import '../styles/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { db } from '../firebase/FirebaseInitializer';
+import { db, auth } from '../firebase/FirebaseInitializer';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading,setLoading]=useState(false);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (email === '' || password === '') {
@@ -20,7 +21,6 @@ export default function Login() {
     }
 
     try {
-      
       const userRef = collection(db, 'users');
       const q = query(userRef, where('email', '==', email), where('password', '==', password));
       const docs = await getDocs(q);
@@ -28,10 +28,10 @@ export default function Login() {
         alert("Invalid email or password");
       } else {
         setLoading(true);
-        const userDoc = docs.docs[0];  
+        const userDoc = docs.docs[0];
         const user = {
-          id: userDoc.id, 
-          photoURL: null, 
+          id: userDoc.id,
+          photoURL: null,
           ...userDoc.data(),
         };
         sessionStorage.setItem('user', JSON.stringify(user));
@@ -44,18 +44,26 @@ export default function Login() {
     }
   };
 
-  const handleForgotPassword = () => {
-    setIsModalOpen(true); 
+  const sendResetMail = () => {
+    if (!email) {
+      alert("Please enter your email to reset your password");
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert("Reset mail sent to your inbox");
+        console.log("Password reset email sent successfully");
+        setIsResettingPassword(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Error sending reset email: ", err.message);
+      });
   };
 
   const handlePasswordUpdate = async () => {
-    if (newPassword === '' || confirmPassword === '') {
-      alert("Please fill in both fields");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      alert("Passwords do not match");
+    if (newPassword === '') {
+      alert("Please enter the new password");
       return;
     }
 
@@ -63,23 +71,25 @@ export default function Login() {
       const userRef = collection(db, 'users');
       const q = query(userRef, where('email', '==', email));
       const docs = await getDocs(q);
-      
+
       if (docs.empty) {
         alert("Email not found");
       } else {
         const userDoc = docs.docs[0];
         const userDocRef = doc(db, 'users', userDoc.id);
         await updateDoc(userDocRef, { password: newPassword });
-        alert("Password updated successfully");
-        setIsModalOpen(false); 
+        alert("Password updated successfully in Firestore");
+        setIsResettingPassword(false);
       }
     } catch (error) {
-      alert("Error updating password: ", error);
+      alert("Error updating password: ", error.message);
     }
   };
-if(loading){
-  return <div>Loading...</div>
-}
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className='login-container'>
       <div className='card'>
@@ -101,29 +111,18 @@ if(loading){
         <p>Don't have an account? <Link to='/signup-page'>SignUp</Link></p>
       </div>
       <div className='forgot-password'>
-        <Link to="#" onClick={handleForgotPassword}>Forgot Password?</Link>
+        <Link to="#" onClick={sendResetMail}>Forgot Password?</Link>
       </div>
 
-    
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <h2>Reset Password</h2>
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <button onClick={handlePasswordUpdate}>Update Password</button>
-            <button onClick={() => setIsModalOpen(false)}>Close</button>
-          </div>
+      {isResettingPassword && (
+        <div className='reset-password'>
+          <input
+            type="password"
+            placeholder="Enter New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <button onClick={handlePasswordUpdate}>Update Password</button>
         </div>
       )}
     </div>
