@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/TraveLog/static/css/main.ceb5f02a.css",
+    "main.js": "/TraveLog/static/js/main.d7dc090f.js",
+    "index.html": "/TraveLog/index.html",
+    "main.ceb5f02a.css.map": "/TraveLog/static/css/main.ceb5f02a.css.map",
+    "main.d7dc090f.js.map": "/TraveLog/static/js/main.d7dc090f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ceb5f02a.css",
+    "static/js/main.d7dc090f.js"
+  ]
+}
