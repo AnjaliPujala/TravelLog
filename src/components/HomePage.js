@@ -204,11 +204,11 @@ export default function HomePage() {
                   Connection Requests
                 </Link>
               </li>
-              <li className="nav-item bg-primary mx-2">
+              {/*<li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/settings">
                   Settings
                 </Link>
-              </li>
+              </li>*/}
               <li className="nav-item bg-primary mx-2">
                 <Link className="nav-link" to="/profile">
                   Profile
@@ -238,9 +238,9 @@ export default function HomePage() {
           <li>
             <Link to="/notifications">Connection Requests</Link>
           </li>
-          <li>
+          {/*<li>
             <Link to="/settings">Settings</Link>
-          </li>
+          </li>*/}
           <li>
             <Link to="/login-page" onClick={() => localStorage.removeItem('isLoggedIn')}>
               Logout

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import '../styles/SignUp.css';
 import { db } from '../firebase/FirebaseInitializer';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
@@ -64,51 +63,7 @@ export default function SignUp() {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    
-    try {
-      setLoading(true);
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-
-      
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const { displayName, email: googleEmail, photoURL } = user;
-
-      const userRef = collection(db, 'users');
-      const q = query(userRef, where('email', '==', googleEmail));
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        alert('Email already registered, please login to your account');
-        return;
-      }
-
-     
-      const docRef = await addDoc(collection(db, 'users'), {
-        name: displayName || 'User', 
-        email: googleEmail,
-        password: '', 
-        photoURL,
-        sentConnections:[],
-        requests:[], 
-        connections:[],
-        createdAt: new Date(),
-      });
-    
-      const newUser = { id: docRef.id, name: displayName || 'User', email: googleEmail, photoURL,sentConnections:[],
-        requests:[],connections:[] };
-      sessionStorage.setItem('user', JSON.stringify(newUser));
-
-      setLoading(false);
-      localStorage.setItem('isLoggedIn', 'true');
-      navigate('/home-page');
-    } catch (error) {
-      console.error('Error signing up: ', error);
-      alert('Error signing up with Google. Please try again.');
-    }
-  };
+  
   if(loading){
     return <div>Loading...</div>
   }
@@ -147,10 +102,7 @@ export default function SignUp() {
           </form>
         </div>
 
-        <div className="google-signup">
-       
-          <button onClick={handleGoogleSignUp}>Sign Up with Google</button>
-        </div>
+        
       </div>
 
       <div className="toLogin">
