@@ -3,14 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/HomePage.css';
 import { db } from '../firebase/FirebaseInitializer';
-import { collection, getDocs, updateDoc, doc, query,where} from 'firebase/firestore';
+import { collection, getDocs, updateDoc, doc, query, where } from 'firebase/firestore';
+import emailjs from '@emailjs/browser';
 
 export default function HomePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [activePostId, setActivePostId] = useState(null); 
-  const [newComment, setNewComment] = useState(''); 
-  const [sentRequests, setSentRequests] = useState([]); 
+  const [activePostId, setActivePostId] = useState(null);
+  const [newComment, setNewComment] = useState('');
+  const [sentRequests, setSentRequests] = useState([]);
   const [user, setUser] = useState('');
   const navigate = useNavigate();
 
@@ -30,11 +31,14 @@ export default function HomePage() {
       const querySnapshot = await getDocs(postsCollection);
       const postsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
+        comments: [], // Default if missing
+        likes: 0, // Default if missing
         ...doc.data(),
       }));
-      setPosts(postsData);
+      setPosts(postsData || []); // Ensure posts is always an array
     } catch (error) {
       console.error('Error fetching posts:', error);
+      setPosts([]); // Fallback
     }
   };
 
@@ -43,20 +47,30 @@ export default function HomePage() {
   }, []);
 
   const handleLike = async (id) => {
-    const updatedPosts = posts.map((post) =>
-      post.id === id ? { ...post, likes: post.likes + 1 } : post
-    );
-    setPosts(updatedPosts);
-
-    const postRef = doc(db, 'user-posts', id);
-    try {
-      await updateDoc(postRef, {
-        likes: updatedPosts.find((post) => post.id === id).likes,
-      });
-    } catch (e) {
-      console.error('Error updating document: ', e);
-    }
-  };
+      const postToUpdate = posts.find((post) => post.id === id);
+  
+      // Check if user's email is already in the likes array
+      if (!postToUpdate.likes.includes(user.email)) {
+        const updatedLikes = [...postToUpdate.likes, user.email];
+  
+        // Update the post in state with the new likes array
+        const updatedPosts = posts.map((post) =>
+          post.id === id ? { ...post, likes: updatedLikes } : post
+        );
+        setPosts(updatedPosts);
+  
+        const postRef = doc(db, 'user-posts', id);
+        try {
+          // Update the Firestore document with the new likes array
+          await updateDoc(postRef, {
+            likes: updatedLikes,
+          });
+        } catch (e) {
+          console.error('Error updating document: ', e);
+        }
+      }
+    };
+  
 
   const handleShowComments = (id) => {
     setActivePostId(activePostId === id ? null : id);
@@ -71,8 +85,7 @@ export default function HomePage() {
 
     const updatedPosts = posts.map((post) => {
       if (post.id === postId) {
-        const updatedComments = [...post.comments, newComment];
-
+        const updatedComments = [...(post.comments || []), newComment]; // Ensure comments is an array
         return { ...post, comments: updatedComments };
       }
       return post;
@@ -82,7 +95,7 @@ export default function HomePage() {
     const postRef = doc(db, 'user-posts', postId);
     try {
       await updateDoc(postRef, {
-        comments: [...updatedPosts.find((post) => post.id === postId).comments, newComment],
+        comments: updatedPosts.find((post) => post.id === postId).comments,
       });
       setNewComment('');
     } catch (e) {
@@ -100,62 +113,85 @@ export default function HomePage() {
     }
   }, [navigate]);
 
-  const handleConnectionRequest = async (receiverName, receiverEmail) => {
-    if (sentRequests.includes(receiverEmail)) return;
   
-    const updatedUser = { 
-      ...user, 
-      sentConnections: [...user.sentConnections, { email: receiverEmail, name: receiverName }] 
+
+const handleConnectionRequest = async (receiverName, receiverEmail) => {
+    if (sentRequests && sentRequests.includes(receiverEmail)) return; // Check for array
+    const updatedUser = {
+        ...user,
+        sentConnections: [...user.sentConnections, { email: receiverEmail, name: receiverName }]
     };
     setUser(updatedUser);
-  
-    setSentRequests((prevRequests) => [...prevRequests, receiverEmail]);
-  
+
+    
+    setSentRequests((prevRequests) => {
+        if (!Array.isArray(prevRequests)) return [receiverEmail];  // Fallback if undefined
+        return [...prevRequests, receiverEmail];
+    });
+
     try {
-      const userRef = collection(db, 'users');
-      let q = query(userRef, where('email', '==', user.email));
-      const userDocs = await getDocs(q);
-  
-      if (userDocs.empty) {
-        alert('User not found');
-        return;
-      }
-  
-      const userDoc = userDocs.docs[0];
-      const userDocRef = doc(db, 'users', userDoc.id);
-  
-      const userDocData = userDoc.data();
-      const newSentConnections = userDocData.sentConnections || [];
-      await updateDoc(userDocRef, {
-        sentConnections: [...newSentConnections, { email: receiverEmail, name: receiverName }],
-      });
-  
-      sessionStorage.setItem('user', JSON.stringify(updatedUser));
-  
-      const recipientRef = collection(db, 'users');
-      q = query(recipientRef, where('email', '==', receiverEmail));
-      const recipientDocs = await getDocs(q);
-  
-      if (recipientDocs.empty) {
-        alert('Recipient not found');
-        return;
-      }
-  
-      const recipientDoc = recipientDocs.docs[0];
-      const recipientDocRef = doc(db, 'users', recipientDoc.id);
-  
-      const recipientData = recipientDoc.data();
-      const newRequests = recipientData.requests || [];
-  
-      await updateDoc(recipientDocRef, {
-        requests: [...newRequests, { senderEmail: user.email, senderName: user.name }],
-      });
-  
+        const userRef = collection(db, 'users');
+        let q = query(userRef, where('email', '==', user.email));
+        const userDocs = await getDocs(q);
+
+        if (userDocs.empty) {
+            alert('User not found');
+            return;
+        }
+
+        const userDoc = userDocs.docs[0];
+        const userDocRef = doc(db, 'users', userDoc.id);
+
+        const userDocData = userDoc.data();
+        const newSentConnections = userDocData.sentConnections || [];
+        await updateDoc(userDocRef, {
+            sentConnections: [...newSentConnections, { email: receiverEmail, name: receiverName }],
+        });
+
+        sessionStorage.setItem('user', JSON.stringify(updatedUser));
+
+        const recipientRef = collection(db, 'users');
+        q = query(recipientRef, where('email', '==', receiverEmail));
+        const recipientDocs = await getDocs(q);
+
+        if (recipientDocs.empty) {
+            alert('Recipient not found');
+            return;
+        }
+
+        const recipientDoc = recipientDocs.docs[0];
+        const recipientDocRef = doc(db, 'users', recipientDoc.id);
+        
+        const recipientData = recipientDoc.data();
+        const newRequests = recipientData.requests || [];
+        const emailData = {
+            subject: "Request from new User",
+            email:receiverEmail,
+            message: `Hello ${receiverName},\nA new Connection request from ${user.name}\nBest Regards,\nTravelLog.`,
+        };
+
+        try {
+          await emailjs.send(
+            'service_npgj14s',
+            'template_5671qrw',
+            emailData,
+            'SV0XPhI3tDyRALbSk'
+          );
+          await updateDoc(recipientDocRef, {
+            requests: [...newRequests, { senderEmail: user.email, senderName: user.name }],
+        });
+            alert(`Connection request send to ${receiverEmail}`);
+        } catch (error) {
+            console.log('Error sending email:', error);
+        }
+
+       
+
     } catch (error) {
-      alert('Error sending connection request: ', error);
+        alert('Error sending connection request: ', error);
     }
-  };
-  
+};
+
   return (
     <div className="home-container">
       <span className="navbar-brand middle-title-small">
@@ -272,7 +308,7 @@ export default function HomePage() {
               <p className="post-description">{post.description}</p>
               {post.locationLink && <img src={post.locationLink} alt="location" className="post-media" />}
               <div className="post-actions">
-                <button onClick={() => handleLike(post.id)}>👍 ({post.likes})</button>
+                <button onClick={() => handleLike(post.id)}>👍 ({post.likes.length})</button>
                 <button onClick={() => handleShowComments(post.id)}>💬 ({post.comments.length})</button>
                 <button
                       onClick={() => handleConnectionRequest(post.name,post.email)} 

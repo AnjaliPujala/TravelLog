@@ -58,14 +58,15 @@ export default function SignUp() {
     setOTP(generatedOtp); // Store OTP in state
   
     const emailData = {
+      subject:"OTP Verification",
       email,
-      message: generatedOtp,
+      message: `Here is your OTP : ${generatedOtp}`,
     };
   
     try {
       setLoading(true); // Start loading
       await emailjs.send(
-        'service_l6tifis',
+        'service_npgj14s',
         'template_5671qrw',
         emailData,
         'SV0XPhI3tDyRALbSk'
@@ -153,7 +154,7 @@ export default function SignUp() {
   return (
     <div className="signup-container">
         {!isOTPSent ? (<div>
-          <h2>Sign Up</h2>
+          <h2>Sign Up to TravelLog</h2>
           <div className="signup-options">
             <div className="manual-signup">
               <form className="form" onSubmit={handleManualSignUp}>

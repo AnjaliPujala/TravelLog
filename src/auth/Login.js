@@ -59,13 +59,14 @@ export default function Login() {
     setOtp(generatedOtp);
 
     const emailData = {
+      subject:"OTP Verification",
       email,
-      message: generatedOtp,
+      message: `Here is your OTP : ${generatedOtp}`,
     };
 
     try {
       await emailjs.send(
-        'service_l6tifis',
+        'service_npgj14s',
         'template_5671qrw',
         emailData,
         'SV0XPhI3tDyRALbSk'

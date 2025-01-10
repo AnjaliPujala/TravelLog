@@ -57,7 +57,7 @@
 }
 
 /* Chat Button */
-.connection .chat-btn {
+.connection .chat-btn, .connection .remove-connection {
   background-color: #007BFF;
   color: white;
   border: none;
@@ -67,8 +67,11 @@
   font-size: 14px;
   width: 100px;
 }
+.connection .remove-connection{
+  width: 200px;
+}
 
-.connection .chat-btn:hover {
+.connection .chat-btn:hover,.connection .remove-connection:hover {
   background-color: #0056b3;
 }
 
