@@ -98,7 +98,7 @@ export default function HomePage() {
     } else {
       setUser(userData);
     }
-  }, []);
+  }, [navigate]);
 
   const handleConnectionRequest = async (receiverName, receiverEmail) => {
     if (sentRequests.includes(receiverEmail)) return;

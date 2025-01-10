@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
 import '../styles/Login.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { db, auth } from '../firebase/FirebaseInitializer';
+import { db } from '../firebase/FirebaseInitializer';
 import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import emailjs from '@emailjs/browser';
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [inputEmail,setInputEmail]=useState('');
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [checkOTP, setCheckOTP] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (email === '' || password === '') {
-      alert("Fill the details");
+    if (inputEmail === '' || password === '') {
+      alert('Fill the details');
       return;
     }
 
     try {
       const userRef = collection(db, 'users');
-      const q = query(userRef, where('email', '==', email), where('password', '==', password));
+      const q = query(userRef, where('email', '==', inputEmail), where('password', '==', password));
       const docs = await getDocs(q);
       if (docs.empty) {
-        alert("Invalid email or password");
+        alert('Invalid email or password');
       } else {
         setLoading(true);
         const userDoc = docs.docs[0];
@@ -40,30 +43,48 @@ export default function Login() {
         navigate('/home-page');
       }
     } catch (error) {
-      alert("Error", error);
+      alert('Error', error);
     }
   };
 
-  const sendResetMail = () => {
+  const sendResetMail = async (e) => {
+    e.preventDefault();
+
     if (!email) {
-      alert("Please enter your email to reset your password");
+      alert('Please enter your email to reset your password.');
       return;
     }
-    sendPasswordResetEmail(auth, email)
-      .then(() => {
-        alert("Reset mail sent to your inbox");
-        console.log("Password reset email sent successfully");
-        setIsResettingPassword(true);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error sending reset email: ", err.message);
-      });
+
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    setOtp(generatedOtp);
+
+    const emailData = {
+      email,
+      message: generatedOtp,
+    };
+
+    try {
+      await emailjs.send(
+        'service_l6tifis',
+        'template_5671qrw',
+        emailData,
+        'SV0XPhI3tDyRALbSk'
+      );
+      alert(`An OTP has been sent to ${email}.`);
+      setIsResettingPassword(true);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      alert('Failed to send OTP. Please try again.');
+    }
   };
 
   const handlePasswordUpdate = async () => {
     if (newPassword === '') {
-      alert("Please enter the new password");
+      alert('Please enter the new password');
+      return;
+    }
+    if (checkOTP !== otp) {
+      alert('Wrong OTP Entered');
       return;
     }
 
@@ -73,16 +94,16 @@ export default function Login() {
       const docs = await getDocs(q);
 
       if (docs.empty) {
-        alert("Email not found");
+        alert('Email not found');
       } else {
         const userDoc = docs.docs[0];
         const userDocRef = doc(db, 'users', userDoc.id);
         await updateDoc(userDocRef, { password: newPassword });
-        alert("Password updated successfully in Firestore");
+        alert('Password updated successfully in Firestore');
         setIsResettingPassword(false);
       }
     } catch (error) {
-      alert("Error updating password: ", error.message);
+      alert('Error updating password: ', error.message);
     }
   };
 
@@ -92,33 +113,58 @@ export default function Login() {
 
   return (
     <div className='login-container'>
+      <div className='login-header'>
+        <h1>Login to TravelLog</h1>
+        <p>Explore and share your travel experiences.</p>
+      </div>
       <div className='card'>
-        <input
-          placeholder='Email'
-          type='email'
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          placeholder='Password'
-          type='password'
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type='submit' onClick={handleLogin}>Login</button>
+        <form onSubmit={handleLogin}>
+          <input
+            placeholder='Email'
+            type='email'
+            name='email'
+            onChange={(e) => setInputEmail(e.target.value)}
+            required
+          />
+          <input
+            placeholder='Password'
+            type='password'
+            name='password'
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type='submit'>Login</button>
+        </form>
       </div>
       <div className='toSignup'>
-        <p>Don't have an account? <Link to='/signup-page'>SignUp</Link></p>
+        <p>
+          Don't have an account? <Link to='/signup-page'>SignUp</Link>
+        </p>
       </div>
       <div className='forgot-password'>
-        <Link to="#" onClick={sendResetMail}>Forgot Password?</Link>
+        <form onSubmit={sendResetMail}>
+          <input
+            type='email'
+            name='email'
+            placeholder='Enter your email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button type='submit'>Forgot Password?</button>
+        </form>
       </div>
-
       {isResettingPassword && (
         <div className='reset-password'>
           <input
-            type="password"
-            placeholder="Enter New Password"
+            type='text'
+            placeholder='Enter Your OTP'
+            value={checkOTP}
+            onChange={(e) => setCheckOTP(e.target.value)}
+          />
+          <input
+            type='password'
+            placeholder='Enter New Password'
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
           />
